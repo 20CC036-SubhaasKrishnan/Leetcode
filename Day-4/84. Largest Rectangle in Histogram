@@ -1,0 +1,32 @@
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int n = heights.length;
+        Deque<Integer> hs = new ArrayDeque<>();
+        Deque<Integer> starts = new ArrayDeque<>();
+        int maxSize = 0;
+        for (int i = 0; i < n; i++) {
+            int height = heights[i];
+            if (hs.isEmpty() || height > hs.peek()) {
+                hs.push(height);
+                starts.push(i);
+            } else if (height < hs.peek()) {
+                int start = 0;
+                while (!hs.isEmpty() && height < hs.peek()) {
+                    start = starts.pop();
+                    maxSize = Math.max(maxSize, size(hs.pop(), start, i));
+                }
+                hs.push(height);
+                starts.push(start);
+            }
+        }
+        
+        while (!hs.isEmpty()) {
+            maxSize = Math.max(maxSize, size(hs.pop(), starts.pop(), n));
+        }
+        return maxSize;
+    }
+    
+    private int size(int height, int start, int end) {
+        return height * (end - start);
+    }
+}
